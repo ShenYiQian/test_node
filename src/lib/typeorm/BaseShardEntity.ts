@@ -13,10 +13,13 @@ export class BaseShardEntity extends BaseEntity {
 
     constructor(shardKey?: string | number, databaseName?: string) {
         super();
-        this._shardKey = shardKey || '';
-        this._databaseName = databaseName || '';
+        this._shardKey = shardKey || null;
+        this._databaseName = databaseName || null;
     }
 
+    // -------------------------------------------------------------------------
+    // Public Methods
+    // -------------------------------------------------------------------------
     /**
      * Saves current entity in the database.
      * If entity does not exist in the database then inserts, otherwise updates.
@@ -32,6 +35,9 @@ export class BaseShardEntity extends BaseEntity {
         return (this.constructor as any).getRepository(this._shardKey, this._databaseName).remove(this);
     }
 
+    // -------------------------------------------------------------------------
+    // Public Static Methods
+    // -------------------------------------------------------------------------
     /**
      * Gets current entity's Repository.
      */

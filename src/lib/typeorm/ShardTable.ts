@@ -1,6 +1,11 @@
 import ShardTableMetadataArgs from './ShardTableMetadataArgs';
 import { shardTableMetadataStorage } from './ShardTableMetadataStorage';
 
+/**
+ * ShardTable Decorate
+ * @param tablePath    use __filename
+ * @param shardCount   shard table count
+ */
 export function shardTable(tablePath:string, shardCount: number): Function {
   return (target: any) => {
     const args:ShardTableMetadataArgs = {
@@ -8,7 +13,6 @@ export function shardTable(tablePath:string, shardCount: number): Function {
       className: target.name,
       shardCount: shardCount
     }
-    console.log('push to storage');
     shardTableMetadataStorage().push(args);
   }
 }

@@ -1,7 +1,7 @@
 
 import { Entity, Column, PrimaryColumn, BaseEntity } from 'typeorm';
-import { BaseShardEntity } from '../typeorm/BaseShardEntity';
-import { shardTable } from '../ShardTable';
+import { BaseShardEntity } from '../../typeorm/BaseShardEntity';
+import { shardTable } from '../../typeorm/ShardTable';
 
 @Entity('game_guid')
 @shardTable(__filename, 5)
