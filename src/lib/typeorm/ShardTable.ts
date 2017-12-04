@@ -1,5 +1,5 @@
 import ShardTableMetadataArgs from './ShardTableMetadataArgs';
-import { shardTableMetadataStorage } from './ShardTableMetadataStorage';
+import { shardTableMetadataStorage } from './ShardTableStorage';
 
 /**
  * ShardTable Decorate
@@ -13,6 +13,6 @@ export function shardTable(tablePath:string, shardCount: number): Function {
       className: target.name,
       shardCount: shardCount
     }
-    shardTableMetadataStorage().push(args);
+    shardTableMetadataStorage().set(target.name, args);
   }
 }

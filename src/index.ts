@@ -124,9 +124,32 @@ let clusterOptions: ClusterOptions = {
 async function main() {
   try {
     await DatabaseFactory.instance.createClusterConnections([clusterOptions]);
+    const shardKey:string = '23345678';
+    let module = DatabaseFactory.instance.getShardEntity('GameGuid', shardKey);
+    let b = new module(shardKey);
+    b.guid = parseInt(shardKey);
+    b.gameId = 123;
+    b.isBinding = 123;
+    b.sessionId = '123123';
+    b.sessionExpireTime = Date.now();
+    b.save().then(result => {
+      console.log('onSaveSuccess :',result);
+    });
+
+    //let cc = await module.findOne({guid:parseInt(shardKey)}, shardKey);
+    //console.log('findOne result = ', cc);
+    //console.log(e);
+    //let g1 = new gg(guid);
+    //console.log(gg, GameGuid);
+    //g1.gameId = 123;
+    //g1.isBinding = 123;
+    //g1.sessionId = '123123';
+    //g1.sessionExpireTime = Date.now();
+    //gameGuid.save();
+    //g1.save(guid.toString());
   } catch (error) {
-    console.log('error = ', error);
-  }
+  console.log('error = ', error);
+}
 }
 
 main().then(_ => _);
