@@ -1,10 +1,10 @@
 import { Entity, Column, PrimaryColumn, Index, Generated, BaseEntity } from 'typeorm';
-import { BaseShardEntity } from '../typeorm/BaseShardEntity';
+import { BaseOrmEntity } from '../typeorm/BaseOrmEntity';
 
 @Entity('game2rd_bind')
-//@shardTable(__filename, 3)
+//@shardTable(3)
 @Index(['gameId', 'thirdPartyId', 'accountType'], { unique: true })
-export class Game2RDBind extends BaseShardEntity {
+export class Game2RDBind extends BaseOrmEntity {
   @PrimaryColumn({ type: 'bigint', name: 'id' })
   @Generated()
   id: number;

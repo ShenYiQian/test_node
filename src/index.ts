@@ -1,90 +1,15 @@
-import { ClusterOptions } from './lib/typeorm/ClusterOptions';
-import { DatabaseFactory } from './lib/DatabaseFactory';
+import { DatabaseOptions } from './lib/typeorm/DatabaseOptions';
 import * as LibPath from 'path';
+const HashRing = require('hashring');
+import { crc32 } from 'crc';
+import { DatabaseFactory } from './lib/DatabaseFactory';
+import { Game2RDBind } from './lib/entities/Game2RDBind';
+const glob = require('glob');
 
-interface errorHandler {
-  (error?: Error, funcName?: string): void
-};
-
-function errorCatcher(handler: errorHandler): Function {
-  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
-    const func = descriptor.value
-    return {
-      get() {
-        return (...args: any[]) => {
-          return Promise.resolve(func.apply(target, args)).catch(error => {
-            handler && handler(error, propertyKey)
-          })
-        }
-      },
-      set(newValue: any) {
-        return newValue
-      }
-    }
-  }
-}
-
-const classDecorator = (target: any) => {
-  const keys = Object.getOwnPropertyNames(target.prototype);
-  /*keys.map(key => {
-    const descriptor = Object.getOwnPropertyDescriptor(target.prototype, key);
-    console.log('funName = ', target.name);
-    console.log('descriptor = ', descriptor);
-  })*/
-
-  console.log('get class prototype names = ', keys, target);
-}
-
-function errorHandler(error?: Error, funName?: string) {
-  console.log(`${funName} get error: ${error}`);
-}
-
-class TestDecorator {
-  private successFun() {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve('aaaa');
-      })
-    })
-  }
-
-  private failFun() {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        reject('bbbb');
-      })
-    })
-  }
-
-  @errorCatcher(errorHandler)
-  public async test1(): Promise<any> {
-    let result = await this.successFun();
-    console.log(result);
-  }
-
-  @errorCatcher(errorHandler)
-  public async test2(): Promise<any> {
-    let result = await this.failFun();
-    console.log(result);
-  }
-
-  @errorCatcher(errorHandler)
-  public async test3(): Promise<any> {
-    let result = await this.successFun();
-    console.log(result);
-    try {
-      let result2 = await this.failFun();
-      console.log(result2);
-    } catch (error) {
-      console.log('self catch error = ' + error);
-    }
-  }
-}
-
-let clusterOptions: ClusterOptions = {
+let databaseOptions: DatabaseOptions = {
   name: 'mysql',
   type: 'mysql',
-  cluster: [
+  optionList: [
     {
       name: 'test_shard_0',
       type: 'mysql',
@@ -93,63 +18,72 @@ let clusterOptions: ClusterOptions = {
       username: 'root',
       password: 'shinezone244',
       database: 'test_shard_0',
-      synchronize: true,
-      entities: [LibPath.join(__dirname, 'lib/entities/**/*.js')]
+      synchronize: false,
+      logging: ["schema", "info", "log", ],
+      entities: [LibPath.join(__dirname, 'lib/entities/*.js')]
     },
     {
-      name: 'test_shard_0',
+      name: 'test_shard_1',
       type: 'mysql',
       host: '172.16.0.180',
       port: 3306,
       username: 'root',
       password: 'shinezone244',
       database: 'test_shard_1',
-      synchronize: true,
-      entities: [LibPath.join(__dirname, 'lib/entities/**/*.js')]
+      synchronize: false,
+      entities: [LibPath.join(__dirname, 'lib/entities/*.js')]
     },
     {
-      name: 'test_shard_0',
+      name: 'test_shard_2',
       type: 'mysql',
       host: '172.16.0.180',
       port: 3306,
       username: 'root',
       password: 'shinezone244',
       database: 'test_shard_2',
-      synchronize: true,
-      entities: [LibPath.join(__dirname, 'lib/entities/**/*.js')]
+      synchronize: false,
+      entities: [LibPath.join(__dirname, 'lib/entities/*.js')]
     }
   ]
 }
 
+interface aaa {
+  aa: string;
+  bb?: string;
+}
+
 async function main() {
   try {
-    await DatabaseFactory.instance.createClusterConnections([clusterOptions]);
-    const shardKey:string = '23345678';
-    let module = DatabaseFactory.instance.getShardEntity('GameGuid', shardKey);
-    let b = new module(shardKey);
-    b.guid = parseInt(shardKey);
-    b.gameId = 123;
-    b.isBinding = 123;
-    b.sessionId = '123123';
-    b.sessionExpireTime = Date.now();
-    b.save().then(result => {
-      console.log('onSaveSuccess :',result);
-    });
+    let a:Map<string, string[]> = new Map();
+    console.log('a.b', a.get('b'));
+    await DatabaseFactory.instance.createDatabaseConnections(databaseOptions, __dirname);
 
-    //let cc = await module.findOne({guid:parseInt(shardKey)}, shardKey);
-    //console.log('findOne result = ', cc);
-    //console.log(e);
-    //let g1 = new gg(guid);
-    //console.log(gg, GameGuid);
-    //g1.gameId = 123;
-    //g1.isBinding = 123;
-    //g1.sessionId = '123123';
-    //g1.sessionExpireTime = Date.now();
-    //gameGuid.save();
-    //g1.save(guid.toString());
+    let success:number = 0;
+    let fail:number = 0;
+    for (let i = 0; i < 10000; i++) {
+      const shardKey = 1000000+i;
+      const md = DatabaseFactory.instance.getEntity('GameGuid', shardKey);
+      // let b = new md(shardKey);
+      // b.guid = shardKey;
+      // b.gameId = 123;
+      // b.isBinding = 123;
+      // b.sessionId = '123123';
+      // b.sessionExpireTime = Date.now();
+      try {
+        let result = await md.findOne({guid:shardKey});
+        console.log('result = ', result);
+        //let result = await b.save();
+        success ++;
+        //console.log('get result = ', result);
+      } catch (error) {
+        fail ++;
+        console.log('on save caught error = ', error);
+      }
+    }
+    console.log('success = ', success, '| fail = ', fail);
   } catch (error) {
-  console.log('error = ', error);
-}
+    console.log('error = ', error);
+  }
 }
 
 main().then(_ => _);

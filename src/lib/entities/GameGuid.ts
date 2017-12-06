@@ -1,11 +1,11 @@
 
 import { Entity, Column, PrimaryColumn, BaseEntity } from 'typeorm';
-import { BaseShardEntity } from '../../typeorm/BaseShardEntity';
-import { shardTable } from '../../typeorm/ShardTable';
+import { BaseOrmEntity } from '../typeorm/BaseOrmEntity';
+import { shardTable } from '../typeorm/ShardTable';
 
 @Entity('game_guid')
-@shardTable(__filename, 5)
-export class GameGuid extends BaseShardEntity {
+@shardTable(5)
+export class GameGuid extends BaseOrmEntity {
   @PrimaryColumn({ type: 'bigint', name: 'guid' })
   guid: number;
 
