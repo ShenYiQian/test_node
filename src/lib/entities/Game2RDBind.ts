@@ -1,5 +1,5 @@
-import { Entity, Column, PrimaryColumn, Index, Generated, BaseEntity } from 'typeorm';
-import { BaseOrmEntity } from '../typeorm/BaseOrmEntity';
+import { Entity, Column, PrimaryColumn, Index, Generated } from 'typeorm';
+import { BaseOrmEntity, shardTable } from 'sasdn-database';
 
 @Entity('game2rd_bind')
 //@shardTable(3)

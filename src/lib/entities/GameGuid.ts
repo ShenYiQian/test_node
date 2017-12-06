@@ -1,7 +1,6 @@
 
-import { Entity, Column, PrimaryColumn, BaseEntity } from 'typeorm';
-import { BaseOrmEntity } from '../typeorm/BaseOrmEntity';
-import { shardTable } from '../typeorm/ShardTable';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { BaseOrmEntity, shardTable } from 'sasdn-database';
 
 @Entity('game_guid')
 @shardTable(5)

@@ -1,10 +1,5 @@
-import { DatabaseOptions } from './lib/typeorm/DatabaseOptions';
+import { DatabaseOptions, DatabaseFactory } from 'sasdn-database';
 import * as LibPath from 'path';
-const HashRing = require('hashring');
-import { crc32 } from 'crc';
-import { DatabaseFactory } from './lib/DatabaseFactory';
-import { Game2RDBind } from './lib/entities/Game2RDBind';
-const glob = require('glob');
 
 let databaseOptions: DatabaseOptions = {
   name: 'mysql',
@@ -54,9 +49,7 @@ interface aaa {
 
 async function main() {
   try {
-    let a:Map<string, string[]> = new Map();
-    console.log('a.b', a.get('b'));
-    await DatabaseFactory.instance.createDatabaseConnections(databaseOptions, __dirname);
+    await DatabaseFactory.instance.initialize(databaseOptions, __dirname);
 
     let success:number = 0;
     let fail:number = 0;
