@@ -4,6 +4,29 @@ import * as LibPath from 'path';
 let databaseOptions: DatabaseOptions = {
   name: 'mysql',
   type: 'mysql',
+  shardingStrategies: [
+    {
+      connctionName: 'test_shard_0',
+      entities: [
+        'Game2RDBind',
+        'GameGuid_2',
+      ],
+    },
+    {
+      connctionName: 'test_shard_1',
+      entities: [
+        'GameGuid_0',
+        'GameGuid_3',
+      ],
+    },
+    {
+      connctionName: 'test_shard_2',
+      entities: [
+        'GameGuid_1',
+        'GameGuid_4',
+      ],
+    },
+  ],
   optionList: [
     {
       name: 'test_shard_0',
