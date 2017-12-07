@@ -1,9 +1,9 @@
 
 import { Entity, Column, PrimaryColumn } from 'typeorm';
-import { BaseOrmEntity, shardTable } from 'sasdn-database';
+import { BaseOrmEntity, ShardTable } from 'sasdn-database';
 
 @Entity('game_guid')
-@shardTable(5)
+@ShardTable(5)
 export class GameGuid extends BaseOrmEntity {
   @PrimaryColumn({ type: 'bigint', name: 'guid' })
   guid: number;

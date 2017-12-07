@@ -1,8 +1,8 @@
 import { Entity, Column, PrimaryColumn, Index, Generated } from 'typeorm';
-import { BaseOrmEntity, shardTable } from 'sasdn-database';
+import { BaseOrmEntity, ShardTable } from 'sasdn-database';
 
 @Entity('game2rd_bind')
-//@shardTable(3)
+//@ShardTable(3)
 @Index(['gameId', 'thirdPartyId', 'accountType'], { unique: true })
 export class Game2RDBind extends BaseOrmEntity {
   @PrimaryColumn({ type: 'bigint', name: 'id' })
