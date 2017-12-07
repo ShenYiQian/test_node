@@ -16,8 +16,8 @@
     "mysql": "2.15.0",
     "mz": "^2.7.0",
     "reflect-metadata": "^0.1.10",
-    "typeorm": "0.1.1",
-    "sasdn-database": "git:github.com/ShenYiQian/SASDN-Database.git#master"
+    "sasdn-database": "git://github.com/ShenYiQian/SASDN-Database.git#master",
+    "typeorm": "0.1.1"
   },
   "devDependencies": {
     "@types/crc": "^3.4.0",
