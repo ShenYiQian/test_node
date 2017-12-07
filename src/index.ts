@@ -87,7 +87,7 @@ async function main() {
       // b.sessionExpireTime = Date.now();
       try {
         let result = await md.findOne({guid:shardKey});
-        console.log('result = ', result);
+        //console.log('result = ', result);
         //let result = await b.save();
         success ++;
         //console.log('get result = ', result);
